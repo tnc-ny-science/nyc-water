@@ -1,0 +1,12 @@
+name: nyc-water
+title: nyc-water
+username:
+account: nyc-water
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 318108
+bundleId: 1594337
+url: https://nyc-water.shinyapps.io/nyc-water/
+when: 1537387312.81551
+asMultiple: FALSE
+asStatic: FALSE
