@@ -1,5 +1,5 @@
 # nyc-water
-This repository contains code and data associated with a web app for interactive visualization of NYC Department of Environmental Protection Harbor Water Quality Data.
+This repository contains code and data associated with a web app for interactive visualization of [NYC Department of Environmental Protection Harbor Water Quality Data](http://www.nyc.gov/html/dep/html/harborwater/harbor_water_sampling_results.shtml).
 
 Contributors to this work are Mike MccCann and Michael Treglia with The Nature Conservancy,
 
