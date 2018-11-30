@@ -1,0 +1,79 @@
+---
+title: "NYC DEP Harbor Water Quality Data Visualization"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+    theme: cosmo
+   # logo: https://www.nature.org/content/dam/tnc/nature/en/logos/tnc-logo-white.svg
+    favicon: https://www.nature.org/content/dam/tnc/nature/en/icons/general-icons/icon_nature_favicon.ico
+
+---
+
+Water Quality Data
+===================================== 
+
+
+```{r setup, include=FALSE}
+# for adjusting font https://stackoverflow.com/questions/29274501/r-markdown-changing-font-size-and-font-type-in-html-output
+
+library(flexdashboard)
+library(sf)
+library(leaflet)
+library(dplyr)
+library(readr)
+library(ggplot2)
+
+sitelocs <- read_csv("../harbor_sampling_coordinates.csv") %>% 
+  st_as_sf(., coords = c("Long", "Lat"), crs = 4326)
+
+
+# import your data 
+dat <- read_csv("../harbor_sampling_all_yrs.csv")
+
+# convert date to a true date 
+dat$date <- as.Date(as.character(dat$date), "%m/%d/%Y")
+```
+
+Column {data-width=300}
+-----------------------------------------------------------------------
+
+### Chart A
+
+```{r}
+leaflet(data=sitelocs) %>% 
+  addTiles(urlTemplate = "https://maps{s}.nyc.gov/xyz/1.0.0/carto/basemap/{z}/{x}/{y}.jpg",
+  attribution = "Map tiles courtesy of the City of New York", layerId = NULL, group = NULL,
+  options = tileOptions(minZoom = 8, maxZoom = 19,  subdomains = '1234',)) %>%
+  addTiles(urlTemplate = "https://maps{s}.nyc.gov/xyz/1.0.0/carto/label/{z}/{x}/{y}.png8",
+  attribution = NULL, layerId = NULL, group = NULL,
+  options = tileOptions(minZoom = 8, maxZoom = 19,  subdomains = '1234',)) %>%
+  #addCircleMarkers(data = st_geometry(sitelocs))
+  addMarkers(., label = ~as.character(Station))
+
+```
+
+Column {data-width=350}
+-----------------------------------------------------------------------
+
+### Chart B
+
+```{r}
+ggplot(dat, aes(x=date))+geom_line(aes(y=dat$DO_bot_mgL))
+
+```
+
+### Chart C
+
+```{r}
+
+```
+
+About this work
+=====================================
+
+### Chart C
+
+```{r}
+
+```
