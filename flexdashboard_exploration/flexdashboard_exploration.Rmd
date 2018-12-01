@@ -10,9 +10,14 @@ output:
 
 ---
 
+
 Water Quality Data
 ===================================== 
 
+About {.sidebar}
+-------------------------------------
+#### The map represents sampling sites
+Hover over a site to see the name of it
 
 ```{r setup, include=FALSE}
 # for adjusting font https://stackoverflow.com/questions/29274501/r-markdown-changing-font-size-and-font-type-in-html-output
@@ -23,6 +28,7 @@ library(leaflet)
 library(dplyr)
 library(readr)
 library(ggplot2)
+library(plotly)
 
 sitelocs <- read_csv("../harbor_sampling_coordinates.csv") %>% 
   st_as_sf(., coords = c("Long", "Lat"), crs = 4326)
@@ -33,12 +39,14 @@ dat <- read_csv("../harbor_sampling_all_yrs.csv")
 
 # convert date to a true date 
 dat$date <- as.Date(as.character(dat$date), "%m/%d/%Y")
+dat <-  arrange(dat, date)
+
 ```
 
 Column {data-width=300}
 -----------------------------------------------------------------------
 
-### Chart A
+### 
 
 ```{r}
 leaflet(data=sitelocs) %>% 
@@ -59,7 +67,11 @@ Column {data-width=350}
 ### Chart B
 
 ```{r}
-ggplot(dat, aes(x=date))+geom_line(aes(y=dat$DO_bot_mgL))
+#p <- plot_ly(dat, x = ~dat[which(dat$site=="K6"),]$date, y = ~dat[which(dat$site=="K6"),]$DO_top_mgL, type = 'scatter', mode = 'lines', color)
+#p
+
+p <- plot_ly(dat, x = ~dat$date, y = ~dat$DO_top_mgL, type = 'scatter', mode = 'lines', split = dat$site)
+p
 
 ```
 
