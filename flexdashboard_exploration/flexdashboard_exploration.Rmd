@@ -10,15 +10,6 @@ output:
 
 ---
 
-
-Water Quality Data
-===================================== 
-
-About {.sidebar}
--------------------------------------
-#### The map represents sampling sites
-Hover over a site to see the name of it
-
 ```{r setup, include=FALSE}
 # for adjusting font https://stackoverflow.com/questions/29274501/r-markdown-changing-font-size-and-font-type-in-html-output
 
@@ -29,6 +20,10 @@ library(dplyr)
 library(readr)
 library(ggplot2)
 library(plotly)
+library(crosstalk)
+library(summarywidget) #from github kent37/summarywidget
+library(tidyr)
+
 
 sitelocs <- read_csv("../harbor_sampling_coordinates.csv") %>% 
   st_as_sf(., coords = c("Long", "Lat"), crs = 4326)
@@ -39,9 +34,36 @@ dat <- read_csv("../harbor_sampling_all_yrs.csv")
 
 # convert date to a true date 
 dat$date <- as.Date(as.character(dat$date), "%m/%d/%Y")
-dat <-  arrange(dat, date)
+dat <-  arrange(dat, date) #%>% gather(wqvar, val, DO_top_mgL:dry_wet) Latter part makes into long form data
+
+sd <- SharedData$new(dat, ~site)
+
+#help("SharedData")
 
 ```
+
+Water Quality Data
+===================================== 
+
+About {.sidebar}
+-------------------------------------
+#### The map represents sampling sites
+Hover over a site to see the name of it
+
+```{r}
+## Create Dropdown Menu
+
+filter_select("site", label="Site", sharedData = sd, group = ~site)
+
+## Create Date Filter
+
+# filter_slider("date", label = "Date Range", sharedData = sd, column = ~date)
+
+
+
+```
+
+
 
 Column {data-width=300}
 -----------------------------------------------------------------------
@@ -61,16 +83,17 @@ leaflet(data=sitelocs) %>%
 
 ```
 
-Column {data-width=350}
+Column {data-width=600}
 -----------------------------------------------------------------------
 
 ### Chart B
 
 ```{r}
-#p <- plot_ly(dat, x = ~dat[which(dat$site=="K6"),]$date, y = ~dat[which(dat$site=="K6"),]$DO_top_mgL, type = 'scatter', mode = 'lines', color)
-#p
+# p <- plot_ly(sd, x = ~sd[which(sd$site=="K6"),]$date, y = ~sd[which(sdt$site=="K6"),]$DO_top_mgL, type = 'scatter', mode = 'lines')
+# p
 
-p <- plot_ly(dat, x = ~dat$date, y = ~dat$DO_top_mgL, type = 'scatter', mode = 'lines', split = dat$site)
+p <- plot_ly(sd, x = ~date, y = ~DO_top_mgL, type = 'scatter', mode = 'lines', split = dat$site)# %>%
+  #highlight(on = "plotly_click", persistent = FALSE, selectize = FALSE, opacityDim = 0.5)
 p
 
 ```
@@ -78,7 +101,13 @@ p
 ### Chart C
 
 ```{r}
-
+# p <- ggplot(sd, aes(date, val)) +
+#   geom_line(aes(group = site)) +
+#   #geom_smooth(data = txhousing, method = "gam") +
+#   facet_wrap(~ wqvar)
+#  
+#  ggplotly(p, tooltip = "year") %>%
+#    highlight(defaultValues = "AC1", color = "red")
 ```
 
 About this work
