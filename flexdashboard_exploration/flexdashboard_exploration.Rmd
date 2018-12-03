@@ -7,11 +7,14 @@ output:
     theme: cosmo
    # logo: https://www.nature.org/content/dam/tnc/nature/en/logos/tnc-logo-white.svg
     favicon: https://www.nature.org/content/dam/tnc/nature/en/icons/general-icons/icon_nature_favicon.ico
+    self_contained: FALSE
 
 ---
 
 ```{r setup, include=FALSE}
 # for adjusting font https://stackoverflow.com/questions/29274501/r-markdown-changing-font-size-and-font-type-in-html-output
+
+# A useful-looking example: http://rstudio-pubs-static.s3.amazonaws.com/209203_02f14fea3274448bbbf8d04c99c6051b.html
 
 library(flexdashboard)
 library(sf)
